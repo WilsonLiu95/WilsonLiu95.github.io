@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Claude iOS App 卡旧账号 / Something went wrong：用 Charles 清理旧 session 的完整攻略</title>
+  <meta name="description" content="记录一次 Claude iOS App 卡旧登录态的排查和解决过程：用 Charles 对 /api/account* 返回 session_expired，让 App 清理本机旧 session。">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Claude iOS App 卡旧账号 / Something went wrong：用 Charles 清理旧 session 的完整攻略">
+  <meta property="og:description" content="从 Proxyman 思路出发，最终用 Charles 清理 Claude iOS 本机旧登录态。">
+  <meta property="og:url" content="https://blog.wilsonsliu.cn/posts/claude-ios-charles-session-reset/">
+  <meta property="og:image" content="https://blog.wilsonsliu.cn/assets/claude-ios-charles-guide/flow-charles-session-reset.svg">
+  <link rel="canonical" href="https://blog.wilsonsliu.cn/posts/claude-ios-charles-session-reset/">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f7f4;
+      --paper: #ffffff;
+      --ink: #18201f;
+      --muted: #63706d;
+      --line: #d9ded9;
+      --teal: #0f766e;
+      --green: #1f8a4c;
+      --amber: #b45309;
+      --rose: #be123c;
+      --code-bg: #f1f5f4;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.75;
+    }
+
+    a {
+      color: var(--teal);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    .site-header {
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .nav {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 18px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      font-weight: 800;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 15px;
+    }
+
+    .hero {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 54px 0 26px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+      gap: 36px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--amber);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 56px);
+      line-height: 1.13;
+      letter-spacing: 0;
+    }
+
+    .summary {
+      margin: 20px 0 0;
+      color: #34423f;
+      font-size: 18px;
+      max-width: 760px;
+    }
+
+    .meta {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .hero img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border: 1px solid var(--line);
+      background: var(--paper);
+    }
+
+    main {
+      width: min(860px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 26px 0 80px;
+    }
+
+    .notice {
+      margin: 0 0 30px;
+      padding: 18px 20px;
+      border-left: 5px solid var(--rose);
+      background: #fff7f8;
+    }
+
+    h2 {
+      margin: 44px 0 14px;
+      font-size: 28px;
+      line-height: 1.28;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 30px 0 10px;
+      font-size: 20px;
+      line-height: 1.35;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 14px 0;
+    }
+
+    ul, ol {
+      padding-left: 1.35em;
+    }
+
+    li + li {
+      margin-top: 7px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin: 18px 0;
+    }
+
+    .panel {
+      padding: 16px 18px;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      border-radius: 8px;
+    }
+
+    .panel h3 {
+      margin-top: 0;
+    }
+
+    code {
+      padding: 0.1em 0.32em;
+      border-radius: 5px;
+      background: var(--code-bg);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.94em;
+    }
+
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--code-bg);
+    }
+
+    pre code {
+      padding: 0;
+      background: transparent;
+      font-size: 14px;
+    }
+
+    figure {
+      margin: 26px 0;
+    }
+
+    figure img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border: 1px solid var(--line);
+      background: var(--paper);
+    }
+
+    figcaption {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .image-pair {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      align-items: start;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      overflow-wrap: anywhere;
+      background: var(--paper);
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      padding: 12px 13px;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      background: #edf4f2;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    .steps {
+      counter-reset: step;
+      list-style: none;
+      padding: 0;
+    }
+
+    .steps li {
+      position: relative;
+      margin: 12px 0;
+      padding: 14px 16px 14px 56px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+    }
+
+    .steps li::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      left: 16px;
+      top: 14px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--teal);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .footer {
+      width: min(860px, calc(100% - 32px));
+      margin: 0 auto 52px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 820px) {
+      .hero,
+      .two-col,
+      .image-pair {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding-top: 34px;
+      }
+
+      .nav {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav" aria-label="Site navigation">
+      <a class="brand" href="/">Wilson Liu</a>
+      <div class="nav-links">
+        <a href="/">博客首页</a>
+        <a href="/archives/">旧文归档</a>
+        <a href="https://github.com/WilsonLiu95">GitHub</a>
+      </div>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div>
+      <p class="eyebrow">Claude iOS Troubleshooting</p>
+      <h1>Claude iOS App 卡旧账号 / Something went wrong：用 Charles 清理旧 session 的完整攻略</h1>
+      <p class="summary">一次真实排障记录：从社区 Proxyman 思路出发，最后用 Charles 精确拦截 <code>/api/account*</code>，让 Claude iOS App 自己清掉本机旧登录态。</p>
+      <p class="meta">发布于 2026-06-14 · 适合新手按步骤操作</p>
+    </div>
+    <img src="/assets/claude-ios-charles-guide/flow-charles-session-reset.svg" alt="Charles 清理 Claude iOS 旧 session 的流程图">
+  </section>
+
+  <main>
+    <p class="notice">这篇不是“解封教程”，也不是绕过 Claude 的账号风控。它解决的是 iOS App 本机旧登录态卡住的问题。如果账号本身已经被服务端限制，这个方法不会恢复账号权限。</p>
+
+    <h2>最终有效方案一句话</h2>
+    <p>在 Mac 上用 Charles 做 iPhone 的 HTTP/HTTPS 代理，只拦截 Claude iOS App 访问 <code>https://claude.ai:443/api/account*</code> 的请求，把响应改成 <code>401 session_expired</code>，并返回两个过期的 <code>Set-Cookie</code>。App 收到“会话过期”后，会主动清理本机旧 session，再关闭代理重新打开 Claude，就可以重新登录。</p>
+
+    <h2>适用和不适用场景</h2>
+    <div class="two-col">
+      <section class="panel">
+        <h3>适合</h3>
+        <ul>
+          <li>Claude iOS App 打开就报 <code>Something went wrong</code>。</li>
+          <li>App 像是一直记住旧账号，删除、重装仍然不干净。</li>
+          <li>手机其他网络正常，但 Claude App 自己卡住。</li>
+          <li>你只是想清理本机旧登录态，重新登录自己的可用账号。</li>
+        </ul>
+      </section>
+      <section class="panel">
+        <h3>不适合</h3>
+        <ul>
+          <li>账号在服务端确实被限制、封禁或无法使用。</li>
+          <li>Mac 和 iPhone 不在同一个 Wi-Fi。</li>
+          <li>你不愿意临时信任 Charles 证书。</li>
+          <li>你不准备在修好后关闭代理和证书信任。</li>
+        </ul>
+      </section>
+    </div>
+
+    <h2>背景：为什么一开始试了 Proxyman</h2>
+    <p>社区最早的思路是用 Proxyman 拦截 Claude App 请求，在请求里删除旧的 <code>sessionKey</code> 和 <code>routingHint</code> Cookie，再在响应里通过 <code>Set-Cookie</code> 让 iOS 删除这两个旧值。</p>
+    <div class="image-pair">
+      <figure>
+        <img src="/assets/claude-ios-charles-guide/community-proxyman-steps-1.png" alt="社区 Proxyman 方案截图第一部分">
+        <figcaption>社区 Proxyman 方案截图 1</figcaption>
+      </figure>
+      <figure>
+        <img src="/assets/claude-ios-charles-guide/community-proxyman-steps-2.png" alt="社区 Proxyman 方案截图第二部分">
+        <figcaption>社区 Proxyman 方案截图 2</figcaption>
+      </figure>
+    </div>
+    <p>这个思路是对的：核心不是“伪造登录”，而是让 App 不再带着旧 session 继续撞墙。但在这次实际操作里，Proxyman 对部分 Claude/Anthropic 域名开启 SSL Proxying 后，App 容易显示 <code>You are offline</code>。最后换成 Charles，并且只拦截更窄的路径：<code>claude.ai:443</code> 下的 <code>/api/account*</code>。</p>
+    <figure>
+      <img src="/assets/claude-ios-charles-guide/community-post-context.png" alt="社区帖上下文截图">
+      <figcaption>社区帖上下文：原始思路来自用户排障经验</figcaption>
+    </figure>
+
+    <h2>准备工作</h2>
+    <ul>
+      <li>一台 Mac。</li>
+      <li>一台 iPhone。</li>
+      <li>Mac 和 iPhone 连同一个 Wi-Fi。</li>
+      <li>Mac 上安装 Charles。</li>
+      <li>知道 Mac 的局域网 IP，例如 <code>192.168.1.253</code>。</li>
+    </ul>
+    <p>查 Mac IP 可以用：</p>
+    <pre><code>ipconfig getifaddr en0</code></pre>
+    <p>Charles 默认 HTTP 代理端口通常是 <code>8888</code>。如果你改过端口，以 Charles 里显示的为准。</p>
+    <p>VPN 建议：排错阶段先关闭 iPhone 上的 VPN。如果 Claude 需要代理出网，优先让 Mac 开 VPN，iPhone 只通过 Wi-Fi HTTP 代理连到 Mac 的 Charles。iPhone 同时开 VPN 时，很多 VPN App 会接管路由，导致 Charles 看不到请求。</p>
+
+    <h2>第一步：让 iPhone 走 Charles 代理</h2>
+    <ol class="steps">
+      <li>打开 iPhone 的 <strong>设置</strong>，进入当前 Wi-Fi。</li>
+      <li>点 Wi-Fi 右侧的信息按钮，找到 <strong>配置代理</strong>。</li>
+      <li>选择 <strong>手动</strong>。</li>
+      <li>服务器填 Mac IP，例如 <code>192.168.1.253</code>。</li>
+      <li>端口填 <code>8888</code>，然后保存。</li>
+      <li>先用 Safari 打开 <code>http://example.com</code> 测试普通网页是否有网。</li>
+    </ol>
+    <p>如果这一步显示“无互联网连接”，优先检查 Charles 是否允许 iPhone 访问：看到弹窗就点 <strong>Allow</strong>，或者在 Charles 的 Access Control 里允许 iPhone IP。</p>
+
+    <h2>第二步：安装并信任 Charles 证书</h2>
+    <p>在 iPhone 已经连上 Charles 代理的前提下，用 Safari 打开：</p>
+    <pre><code>http://chls.pro/ssl</code></pre>
+    <ol>
+      <li><code>设置</code> -> <code>通用</code> -> <code>VPN 与设备管理</code>，安装 Charles 证书描述文件。</li>
+      <li><code>设置</code> -> <code>通用</code> -> <code>关于本机</code> -> <code>证书信任设置</code>，打开 Charles 根证书的完全信任。</li>
+    </ol>
+    <p>这一点非常关键。我们这次中间有一段时间一直看到 <code>You are offline</code>，本质上就是证书没有被完整信任，HTTPS 解密失败。</p>
+
+    <h2>第三步：只开启 claude.ai 的 SSL Proxying</h2>
+    <p>在 Charles 里打开：</p>
+    <pre><code>Proxy -> SSL Proxying Settings</code></pre>
+    <p>勾选 <strong>Enable SSL Proxying</strong>，然后只添加这一条：</p>
+    <pre><code>Host: claude.ai
+Port: 443</code></pre>
+    <p>不要一开始就把 <code>*.anthropic.com</code>、<code>a-api.anthropic.com</code>、<code>*.claude.ai</code> 全部加进去。拦截范围太大时，Claude App 更容易把自己判成离线。</p>
+
+    <h2>第四步：新增 Rewrite 规则</h2>
+    <p>打开 <code>Tools -> Rewrite</code>，新建一个 Set，例如 <code>Claude iOS clear stale session</code>，并勾选 Enable Rewrite。</p>
+
+    <h3>Location</h3>
+    <pre><code>Protocol: https
+Host: claude.ai
+Port: 443
+Path: /api/account*</code></pre>
+
+    <h3>Rule 1：把响应状态改成 401</h3>
+    <pre><code>401 Unauthorized</code></pre>
+
+    <h3>Rule 2：把响应 body 改成会话过期</h3>
+    <pre><code>{"type":"error","error":{"type":"session_expired","message":"Session expired"}}</code></pre>
+
+    <h3>Rule 3：让 sessionKey 过期</h3>
+    <pre><code>Header: Set-Cookie
+Value: sessionKey=; Path=/; Domain=.claude.ai; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure; HttpOnly; SameSite=Lax</code></pre>
+
+    <h3>Rule 4：让 routingHint 过期</h3>
+    <pre><code>Header: Set-Cookie
+Value: routingHint=; Path=/; Domain=.claude.ai; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure; HttpOnly; SameSite=Lax</code></pre>
+    <p>重点：这两个 <code>Set-Cookie</code> 必须是响应头，不是请求头。</p>
+
+    <h2>第五步：正式执行</h2>
+    <ol class="steps">
+      <li>iPhone 上彻底关闭 Claude App。</li>
+      <li>确认 iPhone Wi-Fi 代理仍然指向 Mac 的 Charles。</li>
+      <li>确认 Charles 开着 SSL Proxying 和 Rewrite。</li>
+      <li>打开 Claude App，让它请求一次账号接口。</li>
+      <li>如果 Charles 里看到 <code>https://claude.ai/api/account...</code> 被改成 401，就说明命中了。</li>
+      <li>再次彻底关闭 Claude App。</li>
+      <li>回到 iPhone Wi-Fi 设置，把代理改回关闭。</li>
+      <li>重新打开 Claude App。</li>
+      <li>正常情况下，旧登录态已经清掉，可以重新登录。</li>
+    </ol>
+    <p>成功后不要继续开着 Rewrite，否则你每次访问账号接口都会被 Charles 改成 session expired。</p>
+
+    <h2>常见问题排查</h2>
+    <figure>
+      <img src="/assets/claude-ios-charles-guide/troubleshooting-decision-tree.svg" alt="Charles 排查流程图">
+      <figcaption>排查顺序：先网络，再证书，再 Rewrite</figcaption>
+    </figure>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>现象</th><th>最可能原因</th><th>处理方式</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>iPhone 设置代理后无互联网连接</td><td>Charles 没允许 iPhone 访问，或 IP/端口填错</td><td>确认 Mac IP 和端口，Charles 里点 Allow，或允许局域网网段</td></tr>
+          <tr><td>Safari 打开 HTTPS 页面报证书错误</td><td>Charles 证书只安装了，没有完全信任</td><td>重新走 <code>chls.pro/ssl</code>，安装描述文件，再打开根证书信任</td></tr>
+          <tr><td>Claude App 显示 <code>You are offline</code></td><td>HTTPS 解密失败，或 SSL Proxying 范围太大</td><td>只保留 <code>claude.ai:443</code>，关掉其他 SSL Proxying</td></tr>
+          <tr><td>仍然 <code>Something went wrong</code></td><td>Rewrite 没命中 <code>/api/account*</code></td><td>检查 Location 的 Host、Port、Path；确认 Charles 能看到 HTTPS 明文请求</td></tr>
+          <tr><td>Charles 里只有 CONNECT，看不到路径</td><td>证书没信任，或 SSL Proxying 没开对 Host</td><td>重做证书信任，只给 <code>claude.ai:443</code> 开 SSL Proxying</td></tr>
+          <tr><td>开手机 VPN 后 Charles 没流量</td><td>VPN 接管了网络路径</td><td>先关 iPhone VPN；需要外网时让 Mac 负责出网</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>收尾清理</h2>
+    <ol>
+      <li>iPhone Wi-Fi 代理改回关闭。</li>
+      <li>Charles 里关闭 Rewrite。</li>
+      <li>Charles 里关闭 <code>claude.ai</code> 的 SSL Proxying，或者直接退出 Charles。</li>
+      <li>如果短期不再抓包，可以在 iPhone 里删除 Charles 描述文件，并关闭根证书信任。</li>
+    </ol>
+    <p>HTTPS 抓包工具很强，也很危险。只在自己设备、自己账号、自己明确知道目的的情况下使用。</p>
+
+    <h2>这次真正有用的判断</h2>
+    <p>这次排查里，最容易误判的是把所有 Claude/Anthropic 域名都加进 SSL Proxying。看起来“抓得更全”，但实际会让 App 更容易离线。最后能成功，是因为把范围缩到最小：</p>
+    <pre><code>只拦截 claude.ai:443
+只改 /api/account*
+只让 App 收到 session_expired
+命中一次后立刻关代理</code></pre>
+    <p>这也是给其他类似 App 问题的通用经验：不要一开始就全量拦截，先找最小的状态刷新接口，让客户端自己走退出登录或会话过期逻辑。</p>
+
+    <h2>参考资料</h2>
+    <ul>
+      <li><a href="https://linux.do/t/topic/2316080">社区思路：Linux.do 讨论帖</a></li>
+      <li><a href="https://www.charlesproxy.com/documentation/tools/rewrite/">Charles Rewrite 官方说明</a></li>
+      <li><a href="https://www.charlesproxy.com/documentation/using-charles/ssl-certificates/">Charles SSL 证书官方说明</a></li>
+    </ul>
+  </main>
+
+  <footer class="footer">
+    <p>Written by Wilson Liu. This page is a personal troubleshooting note, not an official Claude or Charles document.</p>
+  </footer>
+</body>
+</html>

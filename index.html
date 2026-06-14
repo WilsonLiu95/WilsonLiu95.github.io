@@ -1,1436 +1,186 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="zh-CN">
 <head>
   <meta charset="utf-8">
-  <html xmlns:wb="http://open.weibo.com/wb">
-
-  <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
-  
-  <title>WilsonLiu&#39;s blog</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wilson Liu Blog</title>
+  <meta name="description" content="Wilson Liu 的个人博客，记录 AI 工具、产品实践、技术排障和个人知识输出。">
   <meta property="og:type" content="website">
-<meta property="og:title" content="WilsonLiu's blog">
-<meta property="og:url" content="http://blog.wilsonliu.cn/index.html">
-<meta property="og:site_name" content="WilsonLiu's blog">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="WilsonLiu's blog">
-  
-  
-    <link rel="icon" href="http://wilsonliu.cn/favicon.ico">
-  
-  
-    
-  
-  <link rel="stylesheet" href="/css/style.css">
-  
-<!-- Google Analytics -->
-<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "//hm.baidu.com/hm.js?fc8ddbf1bcbb18a7b8c1f9979eed0900";
-  var s = document.getElementsByTagName("script")[0];
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
+  <meta property="og:title" content="Wilson Liu Blog">
+  <meta property="og:description" content="AI 工具、产品实践、技术排障和个人知识输出。">
+  <meta property="og:url" content="https://blog.wilsonsliu.cn/">
+  <link rel="canonical" href="https://blog.wilsonsliu.cn/">
+  <style>
+    :root {
+      --bg: #f7f7f4;
+      --paper: #fff;
+      --ink: #17201f;
+      --muted: #61706c;
+      --line: #d9ded9;
+      --teal: #0f766e;
+      --amber: #b45309;
+      --rose: #be123c;
+    }
 
-<!-- End Google Analytics -->
+    * {
+      box-sizing: border-box;
+    }
 
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.7;
+    }
 
+    a {
+      color: var(--teal);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
 
+    .wrap {
+      width: min(1040px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    header {
+      padding: 54px 0 28px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 56px;
+    }
+
+    .brand {
+      color: var(--ink);
+      font-weight: 850;
+      text-decoration: none;
+    }
+
+    .links {
+      display: flex;
+      gap: 16px;
+      font-size: 15px;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--amber);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 760px;
+      font-size: clamp(38px, 7vw, 72px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .intro {
+      max-width: 680px;
+      margin: 22px 0 0;
+      color: #34423f;
+      font-size: 19px;
+    }
+
+    main {
+      padding: 34px 0 80px;
+    }
+
+    .featured {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 0.85fr);
+      gap: 28px;
+      align-items: center;
+      padding: 26px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+    }
+
+    .featured img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .tag {
+      color: var(--rose);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    h2 {
+      margin: 8px 0 12px;
+      font-size: 30px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .old {
+      margin-top: 36px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 780px) {
+      nav,
+      .featured {
+        grid-template-columns: 1fr;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
 </head>
-
 <body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    
-    <div id="header-inner" class="inner">
-      <nav id="sub-nav">
-        
-        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+  <header>
+    <div class="wrap">
+      <nav>
+        <a class="brand" href="/">Wilson Liu</a>
+        <div class="links">
+          <a href="/archives/">旧文归档</a>
+          <a href="/about/">关于</a>
+          <a href="https://github.com/WilsonLiu95">GitHub</a>
+        </div>
       </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://blog.wilsonliu.cn"></form>
+      <p class="eyebrow">Personal Blog</p>
+      <h1>AI 工具、产品实践、技术排障和个人知识输出。</h1>
+      <p class="intro">这里会先放一批真实使用中踩过的坑和解决路径。能复现、能排错、能收尾，比漂亮但不可执行的结论更重要。</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <article class="featured">
+      <div>
+        <p class="tag">最新文章</p>
+        <h2><a href="/posts/claude-ios-charles-session-reset/">Claude iOS App 卡旧账号 / Something went wrong：用 Charles 清理旧 session 的完整攻略</a></h2>
+        <p>一次真实排障记录：从 Proxyman 思路出发，最终用 Charles 精确拦截 <code>/api/account*</code>，让 Claude iOS App 自己清掉本机旧登录态。</p>
+        <p class="meta">2026-06-14 · Claude iOS · Charles · Troubleshooting</p>
       </div>
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">首页</a>
-        
-          <a class="main-nav-link" href="/archives">归档</a>
-        
-          <a class="main-nav-link" href="/about">关于</a>
-        
-          <a class="main-nav-link" href="/project">项目</a>
-        
-          <a class="main-nav-link" href="https://github.com/WilsonLiu95">github</a>
-        
-      </nav>
-      
-    </div>
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">WilsonLiu&#39;s blog</a>
-      </h1>
-      
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main">
-  
-    <article id="postcd ..-致敬养老的一年" class="article article-type-postcd .." itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/06/16/致敬养老的一年/" class="article-date">
-  <time datetime="2017-06-16T01:09:37.000Z" itemprop="datePublished">2017-06-16</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/16/致敬养老的一年/">致敬养老的一年</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>大四伊始，我就给它定了个基调 —— 养老。<br>此外，我定了三个加点方向</p>
-<ol>
-<li>技术 —— web前后端开发体系知识不完善，尤其是后端知识</li>
-<li>修身 —— 一来，该减肥了；二来，身体的健康是未来事业发展的保障</li>
-<li>养性 —— 广泛阅读增长见识，深邃思想，培养兴趣爱好与增强能力</li>
-</ol>
-<p>如今，就要毕业了，也该对这一年养老生活有个交代了。<br>
-        
-          <p class="article-more-link">
-            <a href="/2017/06/16/致敬养老的一年/#more">继续阅读全文 »</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-
-
-
-
-      <a data-url="http://blog.wilsonliu.cn/2017/06/16/致敬养老的一年/" data-id="cj3zf0r3i002motu0t3xm5yme" class="article-share-link">分享</a>
-      
-        <a href="http://blog.wilsonliu.cn/2017/06/16/致敬养老的一年/#ds-thread" class="article-comment-link">留言</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大四-养老/">大四 养老</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="postcd ..-试着探索高并发下的系统面貌" class="article article-type-postcd .." itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/05/23/试着探索高并发下的系统面貌/" class="article-date">
-  <time datetime="2017-05-23T04:28:42.000Z" itemprop="datePublished">2017-05-23</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/23/试着探索高并发下的系统面貌/">试着探索高并发下的系统架构面貌</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>以前端入行编码，但是对后端架构也非常感兴趣。一直以来都觉得那些做到在洪水流量面前保持系统提供高可靠，高性能的服务的小哥哥们都很厉害。总想着去学习一番，因此大半年来不断学习后端相关的知识，试图去理解高并发架构的面貌。</p>
-<p>当然，本文仅仅是试着探索而已，并没有相关实践的经历，也只能从理论的角度去推演，从现有可参考的资料中去堆砌一个在我看来合理的架构方案。限于作者水平有限，因此难免行文难免有误，亦或是对整个系统的理解上理想化了，欢迎各位指出不足。同时，本文不会详实的阐述提到的每个细节，因为本身自己对细节的把控也不到位，另外也是希望大家能够在本文的基础上自己去详细了解这些技术。</p>
-<p><img src="/assets/arch/arch.png" alt="基本架构图"><br>
-        
-          <p class="article-more-link">
-            <a href="/2017/05/23/试着探索高并发下的系统面貌/#more">继续阅读全文 »</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-
-
-
-
-      <a data-url="http://blog.wilsonliu.cn/2017/05/23/试着探索高并发下的系统面貌/" data-id="cj3zf0r3p0030otu0n6i2skvu" class="article-share-link">分享</a>
-      
-        <a href="http://blog.wilsonliu.cn/2017/05/23/试着探索高并发下的系统面貌/#ds-thread" class="article-comment-link">留言</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="postcd ..-关于kmark的改版" class="article article-type-postcd .." itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/03/05/关于kmark的改版/" class="article-date">
-  <time datetime="2017-03-05T01:53:33.000Z" itemprop="datePublished">2017-03-05</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/我的小产品/">我的小产品</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/05/关于kmark的改版/">关于kmark的改版</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="说说来历"><a href="#说说来历" class="headerlink" title="说说来历"></a>说说来历</h2><p>15年下半年，我大三上。折腾了两年的我，开始思考工作还是考研的问题。  </p>
-<p>为了找到更好的答案，解决自己对人生的诸多困惑，我求索于书中，去寻求答案，在这过程中使用kindle<br>读了许多书，思考清楚了许多东西。也开始了我作为WEB前端开发工作之旅，忙绿的生活，让我的心又浮躁了起来，书自然是读的少了。<br>
-        
-          <p class="article-more-link">
-            <a href="/2017/03/05/关于kmark的改版/#more">继续阅读全文 »</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-
-
-
-
-      <a data-url="http://blog.wilsonliu.cn/2017/03/05/关于kmark的改版/" data-id="cj3zf0r290011otu0ps9nbvbj" class="article-share-link">分享</a>
-      
-        <a href="http://blog.wilsonliu.cn/2017/03/05/关于kmark的改版/#ds-thread" class="article-comment-link">留言</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/kmark-kindle文字伴侣/">kmark kindle文字伴侣</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="postcd ..-聊聊这一年从技术麻瓜开始的奋斗史" class="article article-type-postcd .." itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/12/14/聊聊这一年从技术麻瓜开始的奋斗史/" class="article-date">
-  <time datetime="2016-12-14T01:03:57.000Z" itemprop="datePublished">2016-12-14</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/过往历程/">过往历程</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/14/聊聊这一年从技术麻瓜开始的奋斗史/">聊聊这一年从技术麻瓜开始的奋斗史</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>技术麻瓜的大三狗，从初创公司唯一一个前端，到独自北漂在去哪儿进行寒假实习，最后南下腾讯暑期实习并成功转正。<br>作为一只野生的程序员，经历了一年的野蛮生长。将这一年的经历记录下，回味这一年的成长。</p>
-<h2 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h2><p>华科，通信工程专业学渣一枚，目前大四。<br>
-        
-          <p class="article-more-link">
-            <a href="/2016/12/14/聊聊这一年从技术麻瓜开始的奋斗史/#more">继续阅读全文 »</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-
-
-
-
-      <a data-url="http://blog.wilsonliu.cn/2016/12/14/聊聊这一年从技术麻瓜开始的奋斗史/" data-id="cj3zf0r3k002potu0tcbmyt5o" class="article-share-link">分享</a>
-      
-        <a href="http://blog.wilsonliu.cn/2016/12/14/聊聊这一年从技术麻瓜开始的奋斗史/#ds-thread" class="article-comment-link">留言</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/前端/">前端</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/实习/">实习</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="postcd ..-前端也该了解的一些后端知识" class="article article-type-postcd .." itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/12/13/前端也该了解的一些后端知识/" class="article-date">
-  <time datetime="2016-12-13T09:32:10.000Z" itemprop="datePublished">2016-12-13</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/性能/">性能</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/13/前端也该了解的一些后端知识/">前端也该了解的一些后端知识</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>作为一个有追求的前端，在学有余力的同时,不应该把自己仅仅局限于前端的世界中的。<br>而后端的知识是与前端工作最密切相关的一部分内容，多了解些后端的知识也是大有裨益的。</p>
-<p>本文简单叙述了三种构建大型架构的必备知识。也是我做前端这么久以来，一直想知道的如何突破现有的性能瓶颈做到<br>高并发，高性能，高可靠。文中如有错误，欢迎指正。</p>
-<ul>
-<li>优化数据库</li>
-<li>负载均衡</li>
-<li>缓存技术
-        
-          <p class="article-more-link">
-            <a href="/2016/12/13/前端也该了解的一些后端知识/#more">继续阅读全文 »</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-
-
-
-
-      <a data-url="http://blog.wilsonliu.cn/2016/12/13/前端也该了解的一些后端知识/" data-id="cj3zf0r2p001cotu0jvp0dyc2" class="article-share-link">分享</a>
-      
-        <a href="http://blog.wilsonliu.cn/2016/12/13/前端也该了解的一些后端知识/#ds-thread" class="article-comment-link">留言</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/">PHP</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="postcd ..-H5数据推送" class="article article-type-postcd .." itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/12/06/H5数据推送/" class="article-date">
-  <time datetime="2016-12-06T07:15:16.000Z" itemprop="datePublished">2016-12-06</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/前端/">前端</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/06/H5数据推送/">H5数据推送</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>众所周知，AJAX的出现是前端快速发展的一个标志，同时也是前后端得以分离的重要基础。作为一个C/S网络的web系统，网络通信在发挥着举足轻重的作用。<br>大部分的场景下，我们是主动触发AJAX去调取后端数据，但是总有那么些场景是后端数据更新了再推送给前端。<br>本文则试着和读者一起对这个数据推送的需求进行技术方案的探究。</p>
-<p>首先，列一个常用可选的技术清单</p>
-<ul>
-<li>websocket</li>
-<li>SSE(Server-Sent Event)</li>
-<li>轮询(长轮询)
-        
-          <p class="article-more-link">
-            <a href="/2016/12/06/H5数据推送/#more">继续阅读全文 »</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-
-
-
-
-      <a data-url="http://blog.wilsonliu.cn/2016/12/06/H5数据推送/" data-id="cj3zf0r0p0000otu0s6y49olr" class="article-share-link">分享</a>
-      
-        <a href="http://blog.wilsonliu.cn/2016/12/06/H5数据推送/#ds-thread" class="article-comment-link">留言</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Javascript/">Javascript</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="postcd ..-JavaScript函数式编程" class="article article-type-postcd .." itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/12/04/JavaScript函数式编程/" class="article-date">
-  <time datetime="2016-12-04T05:10:35.000Z" itemprop="datePublished">2016-12-04</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/04/JavaScript函数式编程/">JavaScript函数式编程</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>以往经常看到”函数式编程“这一名词，却始终没有花时间去学习，暑期实习结束之后一直忙于边养老边减肥，<strong>81天成功瘦身30斤+</strong> ，开始回归正常的学习生活。<br>便在看《JavaScript函数式编程》这本书，以系统了解函数式编程的知识。本文试图尽可能系统的描述JavaScript函数式编程。当然认识暂时停留于本书介绍的程度，如有错误之处，还请指正。<br>
-        
-          <p class="article-more-link">
-            <a href="/2016/12/04/JavaScript函数式编程/#more">继续阅读全文 »</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-
-
-
-
-      <a data-url="http://blog.wilsonliu.cn/2016/12/04/JavaScript函数式编程/" data-id="cj3zf0r1d000eotu0khuqdc7v" class="article-share-link">分享</a>
-      
-        <a href="http://blog.wilsonliu.cn/2016/12/04/JavaScript函数式编程/#ds-thread" class="article-comment-link">留言</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="postcd ..-漫谈Web缓存" class="article article-type-postcd .." itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/21/漫谈Web缓存/" class="article-date">
-  <time datetime="2016-08-21T05:09:15.000Z" itemprop="datePublished">2016-08-21</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/性能/">性能</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/21/漫谈Web缓存/">漫谈Web缓存</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="背景说明"><a href="#背景说明" class="headerlink" title="背景说明"></a>背景说明</h2><p>缓存一直是前端性能优化中，浓墨重彩的一笔。了解前端缓存是打造高性能网站的必要知识。  </p>
-<p>之前，对于缓存的认知一直停留在看《HTTP权威指南》和一些相关帖子的深度，过了一段时间，又总是忘记，正好最近不是很忙，结合内网上的一些参考资料，结合实践，试着全面解析一下缓存以及其最佳实践。<br>
-        
-          <p class="article-more-link">
-            <a href="/2016/08/21/漫谈Web缓存/#more">继续阅读全文 »</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-
-
-
-
-      <a data-url="http://blog.wilsonliu.cn/2016/08/21/漫谈Web缓存/" data-id="cj3zf0r370022otu08zgzptvo" class="article-share-link">分享</a>
-      
-        <a href="http://blog.wilsonliu.cn/2016/08/21/漫谈Web缓存/#ds-thread" class="article-comment-link">留言</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Javascript/">Javascript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/">PHP</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="postcd ..-认识前端安全" class="article article-type-postcd .." itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/16/认识前端安全/" class="article-date">
-  <time datetime="2016-08-16T05:08:10.000Z" itemprop="datePublished">2016-08-16</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/安全/">安全</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/16/认识前端安全/">认识前端安全</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>前端安全一直是一个蛮严苛的问题，特别如果设计到money更是如此。<br>了解前端安全，在平时的coding中主动考虑，防范于未然，是一个有追求的程序猿应该做的。<br>
-        
-          <p class="article-more-link">
-            <a href="/2016/08/16/认识前端安全/#more">继续阅读全文 »</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-
-
-
-
-      <a data-url="http://blog.wilsonliu.cn/2016/08/16/认识前端安全/" data-id="cj3zf0r3o002xotu0hsentenc" class="article-share-link">分享</a>
-      
-        <a href="http://blog.wilsonliu.cn/2016/08/16/认识前端安全/#ds-thread" class="article-comment-link">留言</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Javascript/">Javascript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/安全/">安全</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="postcd ..-漫话密码存储" class="article article-type-postcd .." itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/15/漫话密码存储/" class="article-date">
-  <time datetime="2016-08-15T05:05:45.000Z" itemprop="datePublished">2016-08-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/安全/">安全</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/15/漫话密码存储/">漫话密码存储</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>密码是用来进行鉴权(身份认证)一种手段,说白了就是证明你是谁。一般鉴权都可以总结为下面3种形式:</p>
-<ol>
-<li>你知道什么? (如密码,密码提示问题等)</li>
-<li>你有什么? (如信用卡,token卡等)</li>
-<li>你是什么?(如指纹识别，瞳孔识别等)</li>
-</ol>
-        
-          <p class="article-more-link">
-            <a href="/2016/08/15/漫话密码存储/#more">继续阅读全文 »</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-
-
-
-
-      <a data-url="http://blog.wilsonliu.cn/2016/08/15/漫话密码存储/" data-id="cj3zf0r34001zotu0downu6vg" class="article-share-link">分享</a>
-      
-        <a href="http://blog.wilsonliu.cn/2016/08/15/漫话密码存储/#ds-thread" class="article-comment-link">留言</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Javascript/">Javascript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/安全/">安全</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="postcd ..-前后端交互过程中的编码" class="article article-type-postcd .." itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/07/25/前后端交互过程中的编码/" class="article-date">
-  <time datetime="2016-07-25T05:04:03.000Z" itemprop="datePublished">2016-07-25</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/前端/">前端</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/25/前后端交互过程中的编码/">前后端交互过程中的编码</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>最近在写PHP，本身对PHP不太熟练。然后遇到编码这个问题，困扰了大半天，索性，系统探索解决一番。<br>
-        
-          <p class="article-more-link">
-            <a href="/2016/07/25/前后端交互过程中的编码/#more">继续阅读全文 »</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-
-
-
-
-      <a data-url="http://blog.wilsonliu.cn/2016/07/25/前后端交互过程中的编码/" data-id="cj3zf0r2j0016otu0qra1nbsk" class="article-share-link">分享</a>
-      
-        <a href="http://blog.wilsonliu.cn/2016/07/25/前后端交互过程中的编码/#ds-thread" class="article-comment-link">留言</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Javascript/">Javascript</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="postcd ..-阅读gulp源码小结" class="article article-type-postcd .." itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/07/18/阅读gulp源码小结/" class="article-date">
-  <time datetime="2016-07-18T05:01:51.000Z" itemprop="datePublished">2016-07-18</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/前端/">前端</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/18/阅读gulp源码小结/">阅读gulp源码小结</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>gulp源码核心部分寥寥60+行。但是通过这60+行代码，gulp给我们带来的确是前端自动化构建的便利。以往以为其源码肯定蛮复杂，<br>却没想到却是这么60+行，这60+行的背后，是来自于模块化的支撑。<br>
-        
-          <p class="article-more-link">
-            <a href="/2016/07/18/阅读gulp源码小结/#more">继续阅读全文 »</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-
-
-
-
-      <a data-url="http://blog.wilsonliu.cn/2016/07/18/阅读gulp源码小结/" data-id="cj3zf0r3s0037otu0l33q52gq" class="article-share-link">分享</a>
-      
-        <a href="http://blog.wilsonliu.cn/2016/07/18/阅读gulp源码小结/#ds-thread" class="article-comment-link">留言</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Javascript/">Javascript</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="postcd ..-阅读sea-js源码小结" class="article article-type-postcd .." itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/06/26/阅读sea-js源码小结/" class="article-date">
-  <time datetime="2016-06-26T04:59:35.000Z" itemprop="datePublished">2016-06-26</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/前端/">前端</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/06/26/阅读sea-js源码小结/">阅读sea.js源码小结</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="想解决的问题"><a href="#想解决的问题" class="headerlink" title="想解决的问题"></a>想解决的问题</h2><ol>
-<li>恼人的命名冲突</li>
-<li>烦琐的文件依赖</li>
-</ol>
-<h2 id="对应带来的好处-Sea-js-带来的两大好处："><a href="#对应带来的好处-Sea-js-带来的两大好处：" class="headerlink" title="对应带来的好处 Sea.js 带来的两大好处："></a>对应带来的好处 Sea.js 带来的两大好处：</h2><ol>
-<li>通过 exports 暴露接口。这意味着不需要命名空间了，更不需要全局变量。这是一种彻底的命名冲突解决方案。</li>
-<li>通过 require 引入依赖。这可以让依赖内置，开发者只需关心当前模块的依赖，其他事情 Sea.js 都会自动处理好。对模块开发者来说，这是一种很好的 关注度分离，能让程序员更多地享受编码的乐趣。
-        
-          <p class="article-more-link">
-            <a href="/2016/06/26/阅读sea-js源码小结/#more">继续阅读全文 »</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-
-
-
-
-      <a data-url="http://blog.wilsonliu.cn/2016/06/26/阅读sea-js源码小结/" data-id="cj3zf0r3r0034otu0kz9fgscz" class="article-share-link">分享</a>
-      
-        <a href="http://blog.wilsonliu.cn/2016/06/26/阅读sea-js源码小结/#ds-thread" class="article-comment-link">留言</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Javascript/">Javascript</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="postcd ..-ShellScript编程小结" class="article article-type-postcd .." itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/05/20/ShellScript编程小结/" class="article-date">
-  <time datetime="2016-05-20T04:56:03.000Z" itemprop="datePublished">2016-05-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/前端/">前端</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/05/20/ShellScript编程小结/">ShellScript编程小结</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>shell作为编程中不可或缺的一部分，平日里，我们经常会在shell中输入一些命令。有时候也需要完成一些复杂的操作，重复的输入多条相同的命令，过于费时和无趣。所以掌握shell script就显得非常有必要了，可以让你用编程的方式调用繁多的命令行工具。</p>
-<p>最近，正好碰上一个一直拖着的需求，便抄起了shell解决掉了，写了人生中第一段shell script代码。</p>
-        
-          <p class="article-more-link">
-            <a href="/2016/05/20/ShellScript编程小结/#more">继续阅读全文 »</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-
-
-
-
-      <a data-url="http://blog.wilsonliu.cn/2016/05/20/ShellScript编程小结/" data-id="cj3zf0r1g000iotu0ow51mc0p" class="article-share-link">分享</a>
-      
-        <a href="http://blog.wilsonliu.cn/2016/05/20/ShellScript编程小结/#ds-thread" class="article-comment-link">留言</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Javascript/">Javascript</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="postcd ..-HTTP内容分发" class="article article-type-postcd .." itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/05/01/HTTP内容分发/" class="article-date">
-  <time datetime="2016-05-01T05:18:52.000Z" itemprop="datePublished">2016-05-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/网络/">网络</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/05/01/HTTP内容分发/">HTTP内容分发</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="Web主机托管"><a href="#Web主机托管" class="headerlink" title="Web主机托管"></a>Web主机托管</h2><p>对内容资源的存储协调以及管理的职责统称为Web主机托管。<br>
-        
-          <p class="article-more-link">
-            <a href="/2016/05/01/HTTP内容分发/#more">继续阅读全文 »</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-
-
-
-
-      <a data-url="http://blog.wilsonliu.cn/2016/05/01/HTTP内容分发/" data-id="cj3zf0r120006otu0d5i907ow" class="article-share-link">分享</a>
-      
-        <a href="http://blog.wilsonliu.cn/2016/05/01/HTTP内容分发/#ds-thread" class="article-comment-link">留言</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/HTTP权威指南/">HTTP权威指南</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="postcd ..-HTTP实体和编码" class="article article-type-postcd .." itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/04/29/HTTP实体和编码/" class="article-date">
-  <time datetime="2016-04-29T05:18:20.000Z" itemprop="datePublished">2016-04-29</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/网络/">网络</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/04/29/HTTP实体和编码/">HTTP实体和编码</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="实体和编码"><a href="#实体和编码" class="headerlink" title="实体和编码"></a>实体和编码</h1><p>每天都有数以亿计的各种媒体对象经由HTTP传送，如图像，文本，影片以及软件程序等。HTTP会确保它的报文被正确的传送，识别，提前以及适当的处理，则需要满足以下条件。<br>
-        
-          <p class="article-more-link">
-            <a href="/2016/04/29/HTTP实体和编码/#more">继续阅读全文 »</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-
-
-
-
-      <a data-url="http://blog.wilsonliu.cn/2016/04/29/HTTP实体和编码/" data-id="cj3zf0r140007otu088cxtele" class="article-share-link">分享</a>
-      
-        <a href="http://blog.wilsonliu.cn/2016/04/29/HTTP实体和编码/#ds-thread" class="article-comment-link">留言</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/HTTP权威指南/">HTTP权威指南</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="postcd ..-端到端的数据" class="article article-type-postcd .." itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/04/28/端到端的数据/" class="article-date">
-  <time datetime="2016-04-28T05:32:08.000Z" itemprop="datePublished">2016-04-28</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/网络/">网络</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/04/28/端到端的数据/">端到端的数据</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>从网络的观点看，应用程序间彼此发送信息。每个消息只是一个未解释的字符串。然而，从应用程序的观点看，这些消息包含各种类型的数据——整型数组，视频帧，文本行，数字图像等。因此，我们需要考虑如何更好地对应用程序要转换成字符串的各种不同类型数据进行编码。</p>
-<p>编码实质上涉及两个问题。第一是接收方能从信号中提取出于传送方发送的消息相同的消息，这就是组帧的问题。第二是尽可能地提高编码效率。<br>
-        
-          <p class="article-more-link">
-            <a href="/2016/04/28/端到端的数据/#more">继续阅读全文 »</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-
-
-
-
-      <a data-url="http://blog.wilsonliu.cn/2016/04/28/端到端的数据/" data-id="cj3zf0r3c002dotu0p0014rzv" class="article-share-link">分享</a>
-      
-        <a href="http://blog.wilsonliu.cn/2016/04/28/端到端的数据/#ds-thread" class="article-comment-link">留言</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/计算机网络/">计算机网络</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="postcd ..-HTTP的识别-认证与安全" class="article article-type-postcd .." itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/04/28/HTTP的识别-认证与安全/" class="article-date">
-  <time datetime="2016-04-28T05:17:44.000Z" itemprop="datePublished">2016-04-28</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/网络/">网络</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/04/28/HTTP的识别-认证与安全/">HTTP的识别,认证与安全</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>第三部分的4章提供了一系列的技术和机器，可用来跟踪身份，进行安全性检测，控制对内容的访问。<br>
-        
-          <p class="article-more-link">
-            <a href="/2016/04/28/HTTP的识别-认证与安全/#more">继续阅读全文 »</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-
-
-
-
-      <a data-url="http://blog.wilsonliu.cn/2016/04/28/HTTP的识别-认证与安全/" data-id="cj3zf0r160008otu0c7wgu7tj" class="article-share-link">分享</a>
-      
-        <a href="http://blog.wilsonliu.cn/2016/04/28/HTTP的识别-认证与安全/#ds-thread" class="article-comment-link">留言</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/HTTP权威指南/">HTTP权威指南</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="postcd ..-HTTP结构" class="article article-type-postcd .." itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/04/27/HTTP结构/" class="article-date">
-  <time datetime="2016-04-27T05:16:48.000Z" itemprop="datePublished">2016-04-27</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/网络/">网络</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/04/27/HTTP结构/">HTTP结构</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>第二部分的5章主要介绍了HTTP服务器，代理，缓存，网关和机器人应用程序，这些都是Web系统架构的构造模块。<br>
-        
-          <p class="article-more-link">
-            <a href="/2016/04/27/HTTP结构/#more">继续阅读全文 »</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-
-
-
-
-      <a data-url="http://blog.wilsonliu.cn/2016/04/27/HTTP结构/" data-id="cj3zf0r1a000cotu0cuys1ulx" class="article-share-link">分享</a>
-      
-        <a href="http://blog.wilsonliu.cn/2016/04/27/HTTP结构/#ds-thread" class="article-comment-link">留言</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/HTTP权威指南/">HTTP权威指南</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="postcd ..-HTTP-Web基础" class="article article-type-postcd .." itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/04/26/HTTP-Web基础/" class="article-date">
-  <time datetime="2016-04-26T05:16:12.000Z" itemprop="datePublished">2016-04-26</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/网络/">网络</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/04/26/HTTP-Web基础/">HTTP:Web基础</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="概述HTTP"><a href="#概述HTTP" class="headerlink" title="概述HTTP"></a>概述HTTP</h2><p>HTTP协议是因特网的多媒体信使。HTTP可以从遍布世界的Web服务器上将这些信息快迅速，便捷，可靠地搬移到人们桌面上的Web浏览器上去。</p>
-<p>HTTP协议主要分Web客户端和服务器。其中Web服务器是Web资源的宿主。Web资源可以包含任意媒体类型内容，HTTP协议为了标识各种媒体类型，会给通过Web传输的对象都打上MIME类型的数据标签格式。(MIME科普:最初设计MIME(<code>Multipurpose Internet Mail Extension</code>，多用途因特网邮件扩展)是为了解决在不同的电子邮件系统之间搬移报文时存在的问题。HTTP随后也采用了它，用他来描述并标记多媒体内容。)<br>
-        
-          <p class="article-more-link">
-            <a href="/2016/04/26/HTTP-Web基础/#more">继续阅读全文 »</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-
-
-
-
-      <a data-url="http://blog.wilsonliu.cn/2016/04/26/HTTP-Web基础/" data-id="cj3zf0r0v0002otu009pmchgd" class="article-share-link">分享</a>
-      
-        <a href="http://blog.wilsonliu.cn/2016/04/26/HTTP-Web基础/#ds-thread" class="article-comment-link">留言</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/HTTP权威指南/">HTTP权威指南</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-
-
-  <nav id="page-nav">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">下一页&raquo;</a>
-  </nav>
-
-</section>
-        
-          <aside id="sidebar">
-  
-    <div class="widget-wrap">
-    <h3 class="widget-title">联系方式</h3>
-    <div class="widget">
-      <p>网站：<a href="https://wilsonliu.cn">https://wilsonliu.cn</a></p>
-      <p>邮箱：<a href="mailto:wilsonliuxyz@gmail.com">wilsonliuxyz@gmail.com</a></p>
-      <p>微博：<a href="http://weibo.com/232534500">WilsonLiu95</a></p>
-      <p>QQ：<a href="http://wpa.qq.com/msgrd?v=3&uin=527622467&site=qq&menu=yes">527622467</a></p>      
-    </div>
-</div>
-
-  
-    <div class="widget-wrap">
-    <h3 class="widget-title">座右铭</h3>
-    <div class="widget">
-        <strong>致力于做一个有故事的人。</strong>
-        <p>小时候听爸爸说他的故事，长大了去创造自己的故事；当父亲后有故事可讲；老了以后有故事可以回味。</p>
-    </div>
-</div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title categories">分类</h3>
-    <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/前端/">前端</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/安全/">安全</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/性能/">性能</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/我的小产品/">我的小产品</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据结构/">数据结构</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/过往历程/">过往历程</a><span class="category-list-count">1</span></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title tagcloud">标签云</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/HTTP权威指南/" style="font-size: 16px; color: #8f4ef5">HTTP权威指南</a> <a href="/tags/Javascript/" style="font-size: 20px; color: #ee82ee">Javascript</a> <a href="/tags/PHP/" style="font-size: 14px; color: #5f34f8">PHP</a> <a href="/tags/kmark-kindle文字伴侣/" style="font-size: 10px; color: #00f">kmark kindle文字伴侣</a> <a href="/tags/前端/" style="font-size: 10px; color: #00f">前端</a> <a href="/tags/大四-养老/" style="font-size: 10px; color: #00f">大四 养老</a> <a href="/tags/安全/" style="font-size: 12px; color: #301afc">安全</a> <a href="/tags/实习/" style="font-size: 10px; color: #00f">实习</a> <a href="/tags/数据结构/" style="font-size: 18px; color: #be68f1">数据结构</a> <a href="/tags/计算机网络/" style="font-size: 18px; color: #be68f1">计算机网络</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title recent-posts">最新文章</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2017/06/16/致敬养老的一年/">致敬养老的一年</a>
-          </li>
-        
-          <li>
-            <a href="/2017/05/23/试着探索高并发下的系统面貌/">试着探索高并发下的系统架构面貌</a>
-          </li>
-        
-          <li>
-            <a href="/2017/03/05/关于kmark的改版/">关于kmark的改版</a>
-          </li>
-        
-          <li>
-            <a href="/2016/12/14/聊聊这一年从技术麻瓜开始的奋斗史/">聊聊这一年从技术麻瓜开始的奋斗史</a>
-          </li>
-        
-          <li>
-            <a href="/2016/12/13/前端也该了解的一些后端知识/">前端也该了解的一些后端知识</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-     
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title archive">归档</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">1</span></li></ul>
-    </div>
-  </div>
-
-
-  
-      <div class="widget-wrap">
-    <h3 class="widget-title">友情链接</h3>
-    <div class="widget">
-        <ul id='link-list'>
-        <li><a href="https://wilsonliu.cn/">wilsonliu的个人网站</a></li>
-        <li><a href="http://smallsfe.cn/">小前端博客</a></li>
-        <li><a href="https://segmentfault.com/blog/wilsonliu95">segmentfault专栏</a></li>
-        <li><a href="http://blog.csdn.net/liusheng95">CSDN专栏</a></li>
-        <li><a href="https://github.com/WilsonLiu95">Github</a></li>
-        </ul>
-    </div>
-  </div>
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-left">
-      &copy; 2014 - 2017 WilsonLiu&nbsp;
-    </div>
-     <div id="footer-right">
-      联系方式&nbsp;|&nbsp;<a href="mailto:wilsonliuxyz@gmail.com">wilsonliuxyz@gmail.com</href>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">首页</a>
-  
-    <a href="/archives" class="mobile-nav-link">归档</a>
-  
-    <a href="/about" class="mobile-nav-link">关于</a>
-  
-    <a href="/project" class="mobile-nav-link">项目</a>
-  
-    <a href="https://github.com/WilsonLiu95" class="mobile-nav-link">github</a>
-  
-</nav>
-    
-
-
-    	<script type="text/javascript">
-        var duoshuoQuery = {short_name:"wilsonliu95"};
-      </script>
-      <script src="/duoshuo/embed.js"></script>
-
-
- <script src="/jquery/jquery.min.js"></script>
-
-
-
-<script src="/js/script.js"></script>
-
-  </div>
+      <a href="/posts/claude-ios-charles-session-reset/" aria-label="阅读 Claude iOS Charles 攻略">
+        <img src="/assets/claude-ios-charles-guide/flow-charles-session-reset.svg" alt="Claude iOS Charles session reset flow">
+      </a>
+    </article>
+
+    <p class="old">旧博客内容仍保留在 <a href="/archives/">归档</a> 中，之后会逐步整理到新的结构里。</p>
+  </main>
 </body>
 </html>

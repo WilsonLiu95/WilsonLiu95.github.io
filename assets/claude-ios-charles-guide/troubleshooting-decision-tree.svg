@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Claude iOS troubleshooting decision tree</title>
+  <desc id="desc">Decision tree for fixing no internet, certificate error, offline, and something went wrong during Charles proxy setup.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+    <style>
+      .bg{fill:#f8fafc}
+      .node{fill:#fff;stroke:#cbd5e1;stroke-width:2}
+      .yes{fill:#dcfce7;stroke:#86efac}
+      .no{fill:#fee2e2;stroke:#fecaca}
+      .fix{fill:#eff6ff;stroke:#bfdbfe}
+      .title{font:700 26px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#0f172a}
+      .body{font:600 19px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1e293b}
+      .small{font:500 15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#64748b}
+      .line{stroke:#334155;stroke-width:3;fill:none;marker-end:url(#arrow)}
+      .label{font:700 14px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#475569}
+    </style>
+  </defs>
+  <rect class="bg" width="1200" height="760"/>
+  <text x="60" y="66" class="title">排查顺序：先网络，再证书，再 Rewrite</text>
+  <text x="60" y="100" class="small">不要一上来就改规则。我们这次真正卡住的点，是证书信任和 Charles 局域网访问。</text>
+
+  <rect x="435" y="135" width="330" height="86" rx="18" class="node"/>
+  <text x="600" y="172" text-anchor="middle" class="body">打开 Claude 仍失败？</text>
+  <text x="600" y="199" text-anchor="middle" class="small">按下面顺序查</text>
+
+  <path d="M600 222 V270" class="line"/>
+  <rect x="400" y="275" width="400" height="88" rx="18" class="node"/>
+  <text x="600" y="314" text-anchor="middle" class="body">iPhone 设置代理后有网吗？</text>
+  <text x="600" y="341" text-anchor="middle" class="small">Safari 打开普通网页测试</text>
+
+  <path d="M400 320 H210 V405" class="line"/>
+  <text x="300" y="308" text-anchor="middle" class="label">没有网</text>
+  <rect x="70" y="410" width="280" height="100" rx="18" class="fix"/>
+  <text x="210" y="449" text-anchor="middle" class="body">修 Charles 访问控制</text>
+  <text x="210" y="477" text-anchor="middle" class="small">Allow iPhone IP / 192.168.1.0/24</text>
+
+  <path d="M800 320 H990 V405" class="line"/>
+  <text x="900" y="308" text-anchor="middle" class="label">有网</text>
+  <rect x="850" y="410" width="280" height="100" rx="18" class="node"/>
+  <text x="990" y="449" text-anchor="middle" class="body">Safari 打开 https 页面</text>
+  <text x="990" y="477" text-anchor="middle" class="small">是否提示证书错误？</text>
+
+  <path d="M990 510 V575" class="line"/>
+  <rect x="850" y="580" width="280" height="100" rx="18" class="fix"/>
+  <text x="990" y="618" text-anchor="middle" class="body">重新安装并信任证书</text>
+  <text x="990" y="646" text-anchor="middle" class="small">chls.pro/ssl + 证书信任设置</text>
+
+  <path d="M850 460 H660 V565" class="line"/>
+  <text x="755" y="448" text-anchor="middle" class="label">证书正常</text>
+  <rect x="500" y="570" width="320" height="100" rx="18" class="fix"/>
+  <text x="660" y="608" text-anchor="middle" class="body">检查 Rewrite 是否命中</text>
+  <text x="660" y="636" text-anchor="middle" class="small">claude.ai:443 /api/account*</text>
+
+  <path d="M500 620 H345" class="line"/>
+  <rect x="65" y="570" width="280" height="100" rx="18" class="yes"/>
+  <text x="205" y="608" text-anchor="middle" class="body">命中后关闭代理</text>
+  <text x="205" y="636" text-anchor="middle" class="small">重开 Claude，重新登录</text>
+</svg>
+
