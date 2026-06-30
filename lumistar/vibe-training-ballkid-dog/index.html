@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vibe Training 球童犬情绪陪练方向提案</title>
+  <meta name="description" content="LumiStar Vibe Training 中球童犬情绪陪练方向的设计提案。">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Vibe Training 球童犬情绪陪练方向提案">
+  <meta property="og:description" content="把球童犬定义成 LumiStar 的训练场小助手：会捡球、陪跑、等你回场，在组间给一句短反馈。">
+  <meta property="og:image" content="https://blog.wilsonsliu.cn/lumistar/vibe-training-ballkid-dog/assets/ballkid-dog-sporty.jpg">
+  <meta property="og:url" content="https://blog.wilsonsliu.cn/lumistar/vibe-training-ballkid-dog/">
+  <link rel="canonical" href="https://blog.wilsonsliu.cn/lumistar/vibe-training-ballkid-dog/">
+  <style>
+    :root {
+      --paper: #fafaf8;
+      --cream: #ffffff;
+      --cloud: #f4f4f2;
+      --rule: #e8e6e1;
+      --ink: #1a1a1f;
+      --coal: #3a3a42;
+      --fog: #6b6b73;
+      --flame: #ff5b1f;
+      --flame-soft: #fff1eb;
+      --green: #c4ff61;
+      --navy: #0a1f44;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Inter, "PingFang SC", -apple-system, BlinkMacSystemFont, "Microsoft YaHei", sans-serif;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      margin: 0;
+      line-height: 1.72;
+    }
+
+    a {
+      color: var(--flame);
+      text-underline-offset: 3px;
+    }
+
+    .wrap {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    header {
+      padding: 42px 0 28px;
+      border-bottom: 1px solid var(--rule);
+      background: linear-gradient(180deg, #ffffff 0%, var(--paper) 100%);
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 54px;
+      color: var(--fog);
+      font-size: 14px;
+    }
+
+    nav a {
+      color: var(--coal);
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .eyebrow {
+      margin: 0 0 14px;
+      color: var(--flame);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 900px;
+      font-size: clamp(38px, 7vw, 76px);
+      line-height: 1.04;
+      letter-spacing: 0;
+    }
+
+    .intro {
+      max-width: 760px;
+      margin: 22px 0 0;
+      color: var(--coal);
+      font-size: 18px;
+    }
+
+    main {
+      padding: 34px 0 88px;
+    }
+
+    .lead {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 18px;
+      align-items: stretch;
+      margin-bottom: 22px;
+    }
+
+    .lead-box,
+    .note {
+      border: 1px solid var(--rule);
+      border-radius: 10px;
+      background: var(--cream);
+      padding: 20px;
+    }
+
+    .lead-box h2,
+    .note h2,
+    section h2 {
+      margin: 0 0 12px;
+      font-size: 24px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .lead-box p,
+    .note p {
+      margin: 0;
+      color: var(--coal);
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--cloud);
+      color: var(--coal);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .tag.strong {
+      background: var(--flame-soft);
+      color: var(--flame);
+    }
+
+    .concepts {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin: 24px 0;
+    }
+
+    figure {
+      margin: 0;
+      border: 1px solid var(--rule);
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--cream);
+    }
+
+    figure img {
+      display: block;
+      width: 100%;
+      height: clamp(360px, 42vw, 560px);
+      object-fit: contain;
+      object-position: center;
+      background: #fff;
+    }
+
+    figcaption {
+      padding: 16px 18px 18px;
+      border-top: 1px solid var(--rule);
+    }
+
+    figcaption .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .num {
+      display: inline-grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: var(--ink);
+      color: white;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      height: 26px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: var(--flame-soft);
+      color: var(--flame);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    figcaption h3 {
+      margin: 0 0 8px;
+      font-size: 22px;
+      line-height: 1.25;
+    }
+
+    figcaption p {
+      margin: 0;
+      color: var(--fog);
+      font-size: 14px;
+    }
+
+    section {
+      margin-top: 34px;
+    }
+
+    .grid-two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .panel {
+      border: 1px solid var(--rule);
+      border-radius: 10px;
+      background: var(--cream);
+      padding: 20px;
+    }
+
+    .rules {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .rule {
+      min-height: 112px;
+      border-radius: 8px;
+      background: var(--cloud);
+      padding: 14px;
+    }
+
+    .rule b {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--ink);
+    }
+
+    .rule span {
+      display: block;
+      color: var(--fog);
+      font-size: 14px;
+    }
+
+    .states {
+      display: grid;
+      gap: 10px;
+    }
+
+    .state {
+      display: grid;
+      grid-template-columns: 88px minmax(0, 1fr);
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .state:last-child {
+      border-bottom: 0;
+    }
+
+    .state b {
+      color: var(--ink);
+    }
+
+    .state span {
+      color: var(--fog);
+      font-size: 14px;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .step {
+      min-height: 150px;
+      border: 1px solid var(--rule);
+      border-radius: 10px;
+      background: var(--cream);
+      padding: 16px;
+    }
+
+    .step small {
+      display: block;
+      margin-bottom: 20px;
+      color: var(--flame);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+    }
+
+    .step b {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    .step span {
+      display: block;
+      color: var(--fog);
+      font-size: 14px;
+    }
+
+    .copy {
+      margin-top: 34px;
+      border: 1px solid rgba(255, 91, 31, 0.28);
+      border-radius: 10px;
+      background: #fff7f2;
+      padding: 22px;
+    }
+
+    .copy p {
+      margin: 0;
+      color: var(--coal);
+      font-size: 16px;
+    }
+
+    .dont {
+      background: var(--ink);
+      color: white;
+    }
+
+    .dont h2 {
+      color: white;
+    }
+
+    .dont .rule {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .dont .rule b {
+      color: white;
+    }
+
+    .dont .rule span {
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    footer {
+      padding: 28px 0 42px;
+      border-top: 1px solid var(--rule);
+      color: var(--fog);
+      font-size: 14px;
+    }
+
+    @media (max-width: 980px) {
+      .lead,
+      .concepts,
+      .grid-two,
+      .flow {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .wrap {
+        width: min(100% - 28px, 1180px);
+      }
+
+      header {
+        padding-top: 28px;
+      }
+
+      nav {
+        align-items: flex-start;
+        flex-direction: column;
+        margin-bottom: 36px;
+      }
+
+      .rules {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <nav>
+        <a href="/">Wilson Liu</a>
+        <span>LumiStar · Vibe Training</span>
+      </nav>
+      <p class="eyebrow">Ballkid Dog · Direction Refinement</p>
+      <h1>球童犬不是“宠物”，是会把你带回训练场的陪练搭子。</h1>
+      <p class="intro">这个方向的价值在于：它天然知道“捡球、等待、陪跑、庆祝”这些网球训练动作。所以它比普通可爱动物更贴 Vibe Training，也比纯科技形象更有情绪温度。</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="lead">
+      <article class="lead-box">
+        <h2>一句话定义</h2>
+        <p>它是 LumiStar 的训练场小助手：不讲复杂技术诊断，只在合适的时机把球、节奏和情绪递回来。</p>
+        <div class="tag-row">
+          <span class="tag strong">情绪陪练</span>
+          <span class="tag">训练场小助手</span>
+          <span class="tag">组间短反馈</span>
+          <span class="tag">不替代教练</span>
+        </div>
+      </article>
+      <aside class="note">
+        <h2>推荐策略</h2>
+        <p>主形象走“运动搭子”，情绪状态补“等你回场”，品牌升级保留“智能球童”。这样既能快速落地，也给长期 IP 化留空间。</p>
+      </aside>
+    </div>
+
+    <section aria-labelledby="concept-title">
+      <h2 id="concept-title">三个视觉版本</h2>
+      <div class="concepts">
+        <figure>
+          <img src="./assets/ballkid-dog-sporty.jpg" alt="球童犬运动搭子方向">
+          <figcaption>
+            <div class="meta"><span class="num">01</span><span class="pill">最推荐</span></div>
+            <h3>运动搭子</h3>
+            <p>最适合做主形象。动作积极，带球包、智能项圈和橙色轨迹，既像陪练又有 LumiStar 的科技感。</p>
+          </figcaption>
+        </figure>
+
+        <figure>
+          <img src="./assets/ballkid-dog-warm.jpg" alt="球童犬等你回场方向">
+          <figcaption>
+            <div class="meta"><span class="num">02</span><span class="pill">情绪场景</span></div>
+            <h3>等你回场</h3>
+            <p>适合断练提醒、低落安慰、训练结束。温柔但偏可爱，建议作为状态表情，不作为唯一主形象。</p>
+          </figcaption>
+        </figure>
+
+        <figure>
+          <img src="./assets/ballkid-dog-tech.jpg" alt="球童犬智能球童方向">
+          <figcaption>
+            <div class="meta"><span class="num">03</span><span class="pill">品牌升级</span></div>
+            <h3>智能球童</h3>
+            <p>运动科技感最强，适合中长期品牌化。可以作为主形象升级版，但表情要再亲和一点。</p>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="grid-two" aria-label="外形规范与情绪状态">
+      <article class="panel">
+        <h2>外形规则</h2>
+        <div class="rules">
+          <div class="rule"><b>轮廓</b><span>中小型、敏捷、短腿不过分，像真的能在球场来回跑。</span></div>
+          <div class="rule"><b>配色</b><span>奶油白主体 + 品牌橙耳尖 / 尾巴 / 轨迹线 + 深空蓝项圈。</span></div>
+          <div class="rule"><b>装备</b><span>智能项圈、轻量球包、可发光反馈灯。装备要薄，不像重型机器。</span></div>
+          <div class="rule"><b>表情</b><span>眼神聪明、期待、专注。不要过圆过萌，避免儿童玩具感。</span></div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <h2>情绪状态</h2>
+        <div class="states">
+          <div class="state"><b>准备</b><span>叼着球或站在球篮旁，提示“今天从轻一点开始”。</span></div>
+          <div class="state"><b>陪跑</b><span>橙色轨迹线跟着球路走，暗示它在帮用户看节奏。</span></div>
+          <div class="state"><b>庆祝</b><span>尾巴亮一下、球包弹出一颗球，表达“这组打得不错”。</span></div>
+          <div class="state"><b>安慰</b><span>坐在场边等你，不催促，只给一个很短的重新开始提示。</span></div>
+          <div class="state"><b>静默</b><span>比赛或高专注训练时只做小灯反馈，不弹大表情。</span></div>
+        </div>
+      </article>
+    </section>
+
+    <section aria-labelledby="flow-title">
+      <h2 id="flow-title">放进 Vibe Training 的 4 个场景</h2>
+      <div class="flow">
+        <div class="step"><small>01</small><b>训练前</b><span>在开练按钮旁出现，像把球递给你：“先来 8 分钟热身”。</span></div>
+        <div class="step"><small>02</small><b>训练中</b><span>只在组间出现，不抢击球注意力。反馈一句话，不做长篇诊断。</span></div>
+        <div class="step"><small>03</small><b>训练后</b><span>和成绩卡一起出现，负责情绪总结：“今天节奏回来了”。</span></div>
+        <div class="step"><small>04</small><b>断练提醒</b><span>坐在球篮旁等你回场，不制造压力，用陪伴而不是惩罚。</span></div>
+      </div>
+    </section>
+
+    <section class="copy" aria-labelledby="copy-title">
+      <h2 id="copy-title">可以直接发给设计同事</h2>
+      <p>球童犬这个方向可以继续细化，但不要做成普通宠物。它更像 LumiStar 的训练场小助手：会捡球、陪跑、等你回场，在组间给一句短反馈。视觉上用奶油白身体 + LumiStar 品牌橙耳尖 / 轨迹线 + 深空蓝智能项圈，既有情绪陪伴，也不至于把品牌做幼稚。主形象建议走“运动搭子”，情绪状态再补“等你回场”和“智能球童”两套表情。</p>
+    </section>
+
+    <section class="panel dont">
+      <h2>不要这样做</h2>
+      <div class="rules">
+        <div class="rule"><b>不要毛绒玩具感</b><span>太圆、太软、太低龄会削弱 LumiStar 的运动科技感。</span></div>
+        <div class="rule"><b>不要讲技术长句</b><span>它只负责情绪和节奏，不替代教练。</span></div>
+        <div class="rule"><b>不要过度机械化</b><span>机器狗方向会丢掉陪伴感。</span></div>
+        <div class="rule"><b>不要复刻多邻国</b><span>LumiStar 更适合“等你回场”，不是压迫式催促。</span></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">Wilson Liu · LumiStar concept note · 2026-06-30</div>
+  </footer>
+</body>
+</html>
